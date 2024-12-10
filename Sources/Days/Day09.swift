@@ -128,7 +128,7 @@ struct Day09: AdventDay {
         movedFileIDs.insert(fileID)
 
         let newIndex = disk.firstIndex(where: {
-          guard case let .freeSpace(length) = $0 else { return false }
+          guard case .freeSpace(let length) = $0 else { return false }
 
           return length >= fileLength
         })

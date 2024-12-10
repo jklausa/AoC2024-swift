@@ -18,8 +18,8 @@ struct Day08: AdventDay {
       matrix
       .enumerated()
       .reduce(into: [Character: [Point]]()) { acc, enumeration in
-        enumeration.element.enumerated().forEach { column, character in
-          guard character != "." else { return }
+        for (column, character) in enumeration.element.enumerated() {
+          guard character != "." else { continue }
           acc[character, default: []].append(Point(x: enumeration.offset, y: column))
         }
       }

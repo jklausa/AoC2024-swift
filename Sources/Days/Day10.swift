@@ -19,7 +19,7 @@ struct Day10: AdventDay {
 
   func findTrailpathsStarts(matrix: [[Int]]) -> [Point] {
     matrix.enumerated().reduce(into: []) { result, row in
-      row.element.enumerated().forEach { column in
+      for column in row.element.enumerated() {
         if column.element == 0 {
           result.append(
             Point(
@@ -76,15 +76,16 @@ struct Day10: AdventDay {
           column: currentPoint.column)
       }()
 
-      [left, right, up, down]
+      let potentialPoints = [left, right, up, down]
         .compactMap { $0 }
         .filter {
           matrix[$0.row][$0.column] == matrix[currentPoint.row][currentPoint.column] + 1
         }
-        .forEach {
-          let path = path + [currentPoint]
-          pointsToCheck.append((path, $0))
-        }
+
+      for point in potentialPoints {
+        let path = path + [currentPoint]
+        pointsToCheck.append((path, point))
+      }
     }
 
     switch resultType {
