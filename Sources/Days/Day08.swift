@@ -1,5 +1,3 @@
-import Algorithms
-
 struct Day08: AdventDay {
   var data: String
 
