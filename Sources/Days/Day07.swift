@@ -72,7 +72,7 @@ struct Day07: AdventDay {
       .filter {
         return recursiveCanAddUpToTarget($0.1.1, $0.1.0)
       }
-      .reduce(into: 0) { $0 += $1.1.0}
+      .reduce(into: 0) { $0 += $1.1.0 }
   }
 
   func part2() -> Any {
@@ -81,6 +81,6 @@ struct Day07: AdventDay {
       .filter {
         return recursiveCanAddUpToTarget($0.1.1, $0.1.0, isP2: true)
       }
-      .reduce(into: 0) { $0 += $1.1.0}
+      .reduce(into: 0) { $0 += $1.1.0 }
   }
 }

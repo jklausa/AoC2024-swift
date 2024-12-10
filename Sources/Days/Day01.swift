@@ -2,7 +2,8 @@ struct Day01: AdventDay {
   var data: String
 
   var lines: [[String]] {
-      return data
+    return
+      data
       .components(separatedBy: .newlines)
       .map { $0.components(separatedBy: .whitespaces) }
   }
@@ -25,7 +26,8 @@ struct Day01: AdventDay {
       acc[number, default: 0] += 1
     }
 
-    let secondAnswer = left
+    let secondAnswer =
+      left
       .map {
         $0 * rightOccurenceMap[$0, default: 0]
       }

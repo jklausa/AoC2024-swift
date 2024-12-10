@@ -1,5 +1,3 @@
-import Algorithms
-
 struct Day06: AdventDay {
   var data: String
 
@@ -25,7 +23,8 @@ struct Day06: AdventDay {
   func parseMatrix() -> ([[GridPoint]], Position) {
     var startingPosition: Position?
 
-    let mappedData = data
+    let mappedData =
+      data
       .components(separatedBy: .whitespacesAndNewlines)
       .enumerated()
       .map { x, string in
@@ -46,10 +45,11 @@ struct Day06: AdventDay {
     return (mappedData, startingPosition!)
   }
 
-
-  func isExitingTheGrid(matrix: [[GridPoint]],
-                        position: Position,
-                        direction: Direction) -> Bool {
+  func isExitingTheGrid(
+    matrix: [[GridPoint]],
+    position: Position,
+    direction: Direction
+  ) -> Bool {
     switch direction {
     case .up:
       if position.row == 0 { return true }
@@ -71,20 +71,24 @@ struct Day06: AdventDay {
     var currentPosition: Position = startingPosition
     var direction: Direction = .up
 
-    while isExitingTheGrid(matrix: matrix,
-                           position: currentPosition,
-                           direction: direction) == false {
+    while isExitingTheGrid(
+      matrix: matrix,
+      position: currentPosition,
+      direction: direction) == false
+    {
 
       visitedPositions.insert(currentPosition)
 
-      let potentialNextPosition: Position = switch direction {
-      case .up: .init(row: currentPosition.row - 1, column: currentPosition.column)
-      case .left: .init(row: currentPosition.row, column: currentPosition.column - 1)
-      case .right: .init(row: currentPosition.row, column: currentPosition.column + 1)
-      case .down: .init(row: currentPosition.row + 1, column: currentPosition.column)
-      }
+      let potentialNextPosition: Position =
+        switch direction {
+        case .up: .init(row: currentPosition.row - 1, column: currentPosition.column)
+        case .left: .init(row: currentPosition.row, column: currentPosition.column - 1)
+        case .right: .init(row: currentPosition.row, column: currentPosition.column + 1)
+        case .down: .init(row: currentPosition.row + 1, column: currentPosition.column)
+        }
 
-      let cellAtPotentialNextPosition = matrix[potentialNextPosition.row][potentialNextPosition.column]
+      let cellAtPotentialNextPosition = matrix[potentialNextPosition.row][
+        potentialNextPosition.column]
 
       if cellAtPotentialNextPosition == .path || cellAtPotentialNextPosition == .startingPosition {
         currentPosition = potentialNextPosition
@@ -115,43 +119,50 @@ struct Day06: AdventDay {
 
     var loopsPositions: Set<Position> = []
 
-    func doesLoopExistWithAdditionalPosition(grid: [[GridPoint]],
-                                             extraBarricadePosition: Position,
-                                             startingPosition: Position) -> Bool {
+    func doesLoopExistWithAdditionalPosition(
+      grid: [[GridPoint]],
+      extraBarricadePosition: Position,
+      startingPosition: Position
+    ) -> Bool {
       var visitedPositionsWithDirections: Set<VisitedPosition> = []
 
       var currentPosition: Position = startingPosition
       var direction: Direction = .up
 
       while true {
-        if isExitingTheGrid(matrix: grid,
-                            position: currentPosition,
-                            direction: direction) {
+        if isExitingTheGrid(
+          matrix: grid,
+          position: currentPosition,
+          direction: direction)
+        {
           return false
         }
 
-        let currentPositionWithDirection = VisitedPosition(position: currentPosition, direction: direction)
+        let currentPositionWithDirection = VisitedPosition(
+          position: currentPosition, direction: direction)
         let insertionResult = visitedPositionsWithDirections.insert(currentPositionWithDirection)
 
         if insertionResult.inserted == false {
           return true
         }
 
-        let potentialNextPosition: Position = switch direction {
-        case .up: .init(row: currentPosition.row - 1, column: currentPosition.column)
-        case .left: .init(row: currentPosition.row, column: currentPosition.column - 1)
-        case .right: .init(row: currentPosition.row, column: currentPosition.column + 1)
-        case .down: .init(row: currentPosition.row + 1, column: currentPosition.column)
-        }
+        let potentialNextPosition: Position =
+          switch direction {
+          case .up: .init(row: currentPosition.row - 1, column: currentPosition.column)
+          case .left: .init(row: currentPosition.row, column: currentPosition.column - 1)
+          case .right: .init(row: currentPosition.row, column: currentPosition.column + 1)
+          case .down: .init(row: currentPosition.row + 1, column: currentPosition.column)
+          }
 
-        let cellAtPotentialNextPosition = if potentialNextPosition == extraBarricadePosition {
-          GridPoint.obstacle
-        }
-        else {
-          matrix[potentialNextPosition.row][potentialNextPosition.column]
-        }
+        let cellAtPotentialNextPosition =
+          if potentialNextPosition == extraBarricadePosition {
+            GridPoint.obstacle
+          } else {
+            matrix[potentialNextPosition.row][potentialNextPosition.column]
+          }
 
-        if cellAtPotentialNextPosition == .path || cellAtPotentialNextPosition == .startingPosition {
+        if cellAtPotentialNextPosition == .path || cellAtPotentialNextPosition == .startingPosition
+        {
           currentPosition = potentialNextPosition
 
           continue
@@ -173,9 +184,11 @@ struct Day06: AdventDay {
         let position = Position(row: rowIdx, column: columnIdx)
         if position == startingPosition { continue }
 
-        if doesLoopExistWithAdditionalPosition(grid: matrix,
-                                               extraBarricadePosition: position,
-                                               startingPosition: startingPosition) {
+        if doesLoopExistWithAdditionalPosition(
+          grid: matrix,
+          extraBarricadePosition: position,
+          startingPosition: startingPosition)
+        {
           loopsPositions.insert(position)
         }
       }

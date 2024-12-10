@@ -2,13 +2,13 @@ struct Day04: AdventDay {
   var data: String
 
   var lines: [String] {
-      data.components(separatedBy: .whitespacesAndNewlines).filter { !$0.isEmpty }
+    data.components(separatedBy: .whitespacesAndNewlines).filter { !$0.isEmpty }
   }
 
   func isArrayOfCharactersMatching(_ characters: [Character], string: String) -> Bool {
     let charactersString = String(characters)
 
-    if charactersString == string ||  String(characters.reversed()) == string {
+    if charactersString == string || String(characters.reversed()) == string {
       return true
     }
 
@@ -35,7 +35,7 @@ struct Day04: AdventDay {
           rowMinus3.map(Character.init),
           rowMinus2.map(Character.init),
           rowMinus1.map(Character.init),
-          currentRow.map(Character.init)
+          currentRow.map(Character.init),
         ]
 
         for index in matrix[3].indices {
@@ -68,7 +68,7 @@ struct Day04: AdventDay {
               matrix[3][index],
             ]
 
-            if isArrayOfCharactersMatching(backSlash, string: "XMAS"){
+            if isArrayOfCharactersMatching(backSlash, string: "XMAS") {
               count += 1
             }
           }
@@ -99,17 +99,18 @@ struct Day04: AdventDay {
         let topLeftDiagonal = [
           charMatrix[rowIndex - 1][characterIndex - 1],
           character,
-          charMatrix[rowIndex + 1][characterIndex + 1]
+          charMatrix[rowIndex + 1][characterIndex + 1],
         ]
 
         let topRightDiagonal = [
           charMatrix[rowIndex - 1][characterIndex + 1],
           character,
-          charMatrix[rowIndex + 1][characterIndex - 1]
+          charMatrix[rowIndex + 1][characterIndex - 1],
         ]
 
         if isArrayOfCharactersMatching(topLeftDiagonal, string: "MAS"),
-           isArrayOfCharactersMatching(topRightDiagonal, string: "MAS") {
+          isArrayOfCharactersMatching(topRightDiagonal, string: "MAS")
+        {
           countPartTwo += 1
         }
       }

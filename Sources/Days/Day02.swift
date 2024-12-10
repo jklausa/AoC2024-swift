@@ -80,13 +80,15 @@ struct Day02: AdventDay {
   }
 
   func part1() -> Any {
-    return levels
+    return
+      levels
       .filter(isValid(level:))
       .count
   }
 
   func part2() -> Any {
-    return levels
+    return
+      levels
       .filter { isValidWithTolerance(level: $0) }
       .count
   }

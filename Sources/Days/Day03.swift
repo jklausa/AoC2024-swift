@@ -4,17 +4,21 @@ struct Day03: AdventDay {
   var data: String
 
   nonisolated(unsafe)
-  private let readableRegex = Regex {
-    "mul("
-    Capture {
-      OneOrMore(.digit)
-    } transform: { Int($0)! }
-    ","
-    Capture {
-      OneOrMore(.digit)
-    } transform: { Int($0)! }
-    ")"
-  }
+    private let readableRegex = Regex {
+      "mul("
+      Capture {
+        OneOrMore(.digit)
+      } transform: {
+        Int($0)!
+      }
+      ","
+      Capture {
+        OneOrMore(.digit)
+      } transform: {
+        Int($0)!
+      }
+      ")"
+    }
 
   func part1() -> Any {
     let readableMatches = data.matches(of: readableRegex)
@@ -64,10 +68,10 @@ struct Day03: AdventDay {
       },
       disableMatches.map {
         Match(kind: .disable, startIndex: $0.range.lowerBound)
-      }
+      },
     ]
-      .flatMap { $0 }
-      .sorted { $0.startIndex < $1.startIndex }
+    .flatMap { $0 }
+    .sorted { $0.startIndex < $1.startIndex }
 
     var acc: Int = 0
     var isEnabled: Bool = true
@@ -86,6 +90,3 @@ struct Day03: AdventDay {
     return acc
   }
 }
-
-
-

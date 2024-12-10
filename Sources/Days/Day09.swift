@@ -18,22 +18,23 @@ struct Day09: AdventDay {
   func mapDisk(input: String) -> [Block] {
     var fileID = 0
 
-    return input
+    return
+      input
       .trimmingCharacters(in: .whitespacesAndNewlines)
       .enumerated()
       .compactMap {
-      let mappedInt = Int(String($1))!
+        let mappedInt = Int(String($1))!
 
-      if $0 % 2 == 0 {
-        let block = Block.file(length: mappedInt, fileID: fileID)
-        fileID += 1
-        return block
-      } else if mappedInt != 0 {
-        return Block.freeSpace(mappedInt)
-      } else {
-        return nil
+        if $0 % 2 == 0 {
+          let block = Block.file(length: mappedInt, fileID: fileID)
+          fileID += 1
+          return block
+        } else if mappedInt != 0 {
+          return Block.freeSpace(mappedInt)
+        } else {
+          return nil
+        }
       }
-    }
   }
 
   func checkSumDisk(input: [Block]) -> Int {
@@ -42,7 +43,7 @@ struct Day09: AdventDay {
     return input.reduce(into: 0) {
       switch $1 {
       case .file(let length, let fileID):
-        $0 += Array(currentOffset..<currentOffset+length).reduce(0, +) * fileID
+        $0 += Array(currentOffset..<currentOffset + length).reduce(0, +) * fileID
 
         currentOffset += length
       case .freeSpace(let length):
@@ -51,52 +52,51 @@ struct Day09: AdventDay {
     }
   }
 
-    func binPackDisk(input: [Block]) -> [Block] {
-      var leftPointer = 0
-      var disk = input
+  func binPackDisk(input: [Block]) -> [Block] {
+    var leftPointer = 0
+    var disk = input
 
-      while leftPointer < disk.count {
-        let itemAtFreeSpaceIndex = disk[leftPointer]
+    while leftPointer < disk.count {
+      let itemAtFreeSpaceIndex = disk[leftPointer]
 
-        switch itemAtFreeSpaceIndex {
-        case .file:
-          leftPointer += 1
+      switch itemAtFreeSpaceIndex {
+      case .file:
+        leftPointer += 1
+        continue
+      case .freeSpace(let freeSpaceLength):
+        let lastItem = disk.removeLast()
+
+        switch lastItem {
+        case .freeSpace:
+          // If the last item is a free space, we just yeet it, and retry the loop with the same index, with the new last item.
           continue
-        case .freeSpace(let freeSpaceLength):
-          let lastItem = disk.removeLast()
+        case .file(let lastFileLength, let lastFileID):
+          // If it's exactly the same length, we just slot it into place.
+          if freeSpaceLength == lastFileLength {
+            disk[leftPointer] = lastItem
+            leftPointer += 1
 
-          switch lastItem {
-          case .freeSpace:
-            // If the last item is a free space, we just yeet it, and retry the loop with the same index, with the new last item.
             continue
-          case .file(let lastFileLength, let lastFileID):
-            // If it's exactly the same length, we just slot it into place.
-            if freeSpaceLength == lastFileLength {
-              disk[leftPointer] = lastItem
-              leftPointer += 1
+          }
 
-              continue
-            }
+          if freeSpaceLength < lastFileLength {
+            // Slot a piece of the file that fits into the free space, append the chunk that didn't fit to the end
+            let newItem = Block.file(length: freeSpaceLength, fileID: lastFileID)
+            disk[leftPointer] = newItem
 
-            if freeSpaceLength < lastFileLength {
-              // Slot a piece of the file that fits into the free space, append the chunk that didn't fit to the end
-              let newItem = Block.file(length: freeSpaceLength, fileID: lastFileID)
-              disk[leftPointer] = newItem
+            disk.append(Block.file(length: lastFileLength - freeSpaceLength, fileID: lastFileID))
+          }
 
-              disk.append(Block.file(length: lastFileLength - freeSpaceLength, fileID: lastFileID))
-            }
-
-            if freeSpaceLength > lastFileLength {
-              disk[leftPointer] = Block.file(length: lastFileLength, fileID: lastFileID)
-              disk.insert(.freeSpace(freeSpaceLength - lastFileLength), at: leftPointer + 1)
-            }
+          if freeSpaceLength > lastFileLength {
+            disk[leftPointer] = Block.file(length: lastFileLength, fileID: lastFileID)
+            disk.insert(.freeSpace(freeSpaceLength - lastFileLength), at: leftPointer + 1)
           }
         }
       }
-
-      return disk
     }
 
+    return disk
+  }
 
   func part1() -> Any {
     let mappedDisk = mapDisk(input: data)
@@ -134,7 +134,8 @@ struct Day09: AdventDay {
         })
 
         guard let newIndex,
-              newIndex < rightPointer else {
+          newIndex < rightPointer
+        else {
           continue
         }
 
@@ -151,7 +152,6 @@ struct Day09: AdventDay {
 
     return disk
   }
-
 
   func part2() -> Any {
     let mappedDisk = mapDisk(input: data)

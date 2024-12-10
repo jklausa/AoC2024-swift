@@ -14,7 +14,8 @@ struct Day08: AdventDay {
   }
 
   func makeOccurencesMap(matrix: [[Character]]) -> [Character: [Point]] {
-    return matrix
+    return
+      matrix
       .enumerated()
       .reduce(into: [Character: [Point]]()) { acc, enumeration in
         enumeration.element.enumerated().forEach { column, character in
@@ -26,7 +27,8 @@ struct Day08: AdventDay {
 
   func isValidPoint(matrix: [[Character]], point: Point) -> Bool {
     if point.x >= 0, point.x < matrix.first!.count,
-       point.y >= 0, point.y < matrix.count {
+      point.y >= 0, point.y < matrix.count
+    {
       return true
     }
 
@@ -45,11 +47,13 @@ struct Day08: AdventDay {
         let currentPoint = pointsToCondsider.removeLast()
 
         for point in pointsToCondsider {
-          let distance = (point.x - currentPoint.x,  point.y - currentPoint.y)
+          let distance = (point.x - currentPoint.x, point.y - currentPoint.y)
           let doubleDistance = (distance.0 * 2, distance.1 * 2)
 
-          let antinodeFromCurrentPoint = Point(x: (currentPoint.x + doubleDistance.0), y: (currentPoint.y + doubleDistance.1))
-          let antinodeFromIteratedPoint = Point(x: (point.x - doubleDistance.0), y: (point.y - doubleDistance.1))
+          let antinodeFromCurrentPoint = Point(
+            x: (currentPoint.x + doubleDistance.0), y: (currentPoint.y + doubleDistance.1))
+          let antinodeFromIteratedPoint = Point(
+            x: (point.x - doubleDistance.0), y: (point.y - doubleDistance.1))
 
           if isValidPoint(matrix: matrix, point: antinodeFromCurrentPoint) {
             antinodes.insert(antinodeFromCurrentPoint)
@@ -82,9 +86,10 @@ struct Day08: AdventDay {
         let currentPoint = pointsToCondsider.removeLast()
 
         for point in pointsToCondsider {
-          let distance = (point.x - currentPoint.x,  point.y - currentPoint.y)
+          let distance = (point.x - currentPoint.x, point.y - currentPoint.y)
 
-          antinodes.formUnion(allValidPoints(from: currentPoint, dx: distance.0, dy: distance.1, within: matrix))
+          antinodes.formUnion(
+            allValidPoints(from: currentPoint, dx: distance.0, dy: distance.1, within: matrix))
         }
       }
 

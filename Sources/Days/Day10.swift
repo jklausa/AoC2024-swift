@@ -18,12 +18,13 @@ struct Day10: AdventDay {
   }
 
   func findTrailpathsStarts(matrix: [[Int]]) -> [Point] {
-     matrix.enumerated().reduce(into: []) { result, row in
+    matrix.enumerated().reduce(into: []) { result, row in
       row.element.enumerated().forEach { column in
         if column.element == 0 {
           result.append(
-            Point(row: row.offset,
-                  column: column.offset)
+            Point(
+              row: row.offset,
+              column: column.offset)
           )
         }
       }
@@ -46,29 +47,33 @@ struct Day10: AdventDay {
       let left: Point? = {
         guard currentPoint.column > 0 else { return nil }
 
-        return Point(row: currentPoint.row,
-                     column: currentPoint.column - 1)
+        return Point(
+          row: currentPoint.row,
+          column: currentPoint.column - 1)
       }()
 
       let right: Point? = {
         guard currentPoint.column < matrix[currentPoint.row].count - 1 else { return nil }
 
-        return Point(row: currentPoint.row,
-                     column: currentPoint.column + 1)
+        return Point(
+          row: currentPoint.row,
+          column: currentPoint.column + 1)
       }()
 
       let up: Point? = {
         guard currentPoint.row > 0 else { return nil }
 
-        return Point(row: currentPoint.row - 1,
-                     column: currentPoint.column)
+        return Point(
+          row: currentPoint.row - 1,
+          column: currentPoint.column)
       }()
 
       let down: Point? = {
         guard currentPoint.row < matrix.count - 1 else { return nil }
 
-        return Point(row: currentPoint.row + 1,
-                     column: currentPoint.column)
+        return Point(
+          row: currentPoint.row + 1,
+          column: currentPoint.column)
       }()
 
       [left, right, up, down]
@@ -90,12 +95,12 @@ struct Day10: AdventDay {
     }
   }
 
-
   func part1() -> Any {
     let matrix = calculateMatrix()
     let trailpathsStarts = findTrailpathsStarts(matrix: matrix)
 
-    return trailpathsStarts
+    return
+      trailpathsStarts
       .map { trailpathsStartingFrom($0, in: matrix, resultType: .numberOfNinesReachable) }
       .reduce(0, +)
   }
@@ -104,7 +109,8 @@ struct Day10: AdventDay {
     let matrix = calculateMatrix()
     let trailpathsStarts = findTrailpathsStarts(matrix: matrix)
 
-    return trailpathsStarts
+    return
+      trailpathsStarts
       .map { trailpathsStartingFrom($0, in: matrix, resultType: .totalPaths) }
       .reduce(0, +)
   }

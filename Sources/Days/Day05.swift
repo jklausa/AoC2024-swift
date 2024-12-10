@@ -94,15 +94,17 @@ struct Day05: AdventDay {
 
     var sorted: [[Int]] = []
     for inValidList in inValidLists {
-      sorted.append(inValidList.sorted {
-        // first argument should be before last
-        if let set = mustBeFollowedBy[$0],
-           set.contains($1) {
-          return false
-        }
+      sorted.append(
+        inValidList.sorted {
+          // first argument should be before last
+          if let set = mustBeFollowedBy[$0],
+            set.contains($1)
+          {
+            return false
+          }
 
-        return true
-      })
+          return true
+        })
     }
 
     return sorted.reduce(into: 0) { acc, list in
