@@ -86,7 +86,8 @@ struct Day11: AdventDay {
 
     let digits = number.digits
     guard digits.count % 2 == 0 else {
-      let result = recursiveProcessStones(number: number * 2024, recursion: recursion - 1, memo: &memo)
+      let result = recursiveProcessStones(
+        number: number * 2024, recursion: recursion - 1, memo: &memo)
       memo[recursion, default: [:]][number] = result
 
       return result
@@ -103,24 +104,38 @@ struct Day11: AdventDay {
     return leftResult + rightResult
   }
 
-  func part1() async -> Any {
+  func part1() -> Any {
+    var stones = initialStones
+
+    for _ in 1...25 {
+      stones = processStones(input: stones)
+    }
+
+    return stones.count
+  }
+
+  func part2() -> Any {
+    var memo: [Int: [Int: Int]] = [:]
+
+    let recursive = initialStones.map {
+      recursiveProcessStones(number: $0, recursion: 75, memo: &memo)
+    }.reduce(0, +)
+
+    return recursive
+  }
+
+  func alternativePart2() -> Any {
     var stones = initialStones.reduce(into: [:]) { $0[$1, default: 0] += 1 }
 
     for _ in 1...75 {
       stones = processStonesSmarter(input: stones)
     }
 
-    return stones.values.reduce(0, +)
-  }
+    let sum = stones.reduce(into: 0) { acc, dictionaryItem in
+      acc += dictionaryItem.value
+    }
 
-  func part2() async -> Any {
-    var memo: [Int: [Int: Int]] = [:]
-
-    let recursive =  initialStones.map {
-      recursiveProcessStones(number: $0, recursion: 75, memo: &memo)
-    }.reduce(0, +)
-
-    return recursive
+    return sum
   }
 }
 
