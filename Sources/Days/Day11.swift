@@ -27,12 +27,42 @@ struct Day11: AdventDay {
         continue
       }
 
-
       output.append(digits[0 ..< (digits.count / 2)].numberFromDigits)
       output.append(digits[(digits.count / 2) ..< digits.count].numberFromDigits)
     }
 
     return output
+  }
+
+  // number: count
+  func processStonesSmarter(input: [Int: Int]) -> [Int: Int] {
+    var result: [Int: Int] = [:]
+
+    for (stone, count) in input {
+      guard stone != 0 else {
+        result[1, default: 0] += count
+        continue
+      }
+
+      guard stone != 1 else {
+        result[2024, default: 0] += count
+        continue
+      }
+
+      let digits = stone.digits
+      guard digits.count % 2 == 0 else {
+        result[stone * 2024, default: 0] += count
+        continue
+      }
+
+      let left = digits[0 ..< (digits.count / 2)].numberFromDigits
+      let right = digits[(digits.count / 2) ..< digits.count].numberFromDigits
+
+      result[left, default: 0] += count
+      result[right, default: 0] += count
+    }
+
+    return result
   }
 
   func part1() async -> Any {
@@ -46,7 +76,17 @@ struct Day11: AdventDay {
   }
 
   func part2() async -> Any {
-    return 0
+    var stones = initialStones.reduce(into: [:]) { $0[$1, default: 0] += 1 }
+
+    for i in 1 ... 75 {
+      stones = processStonesSmarter(input: stones)
+    }
+
+    let sum = stones.reduce(into: 0) { acc, dictionaryItem in
+      acc += dictionaryItem.value
+    }
+
+    return sum
   }
 }
 
