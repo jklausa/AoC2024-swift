@@ -27,8 +27,8 @@ struct Day11: AdventDay {
         continue
       }
 
-      output.append(digits[0 ..< (digits.count / 2)].numberFromDigits)
-      output.append(digits[(digits.count / 2) ..< digits.count].numberFromDigits)
+      output.append(digits[0..<(digits.count / 2)].numberFromDigits)
+      output.append(digits[(digits.count / 2)..<digits.count].numberFromDigits)
     }
 
     return output
@@ -55,8 +55,8 @@ struct Day11: AdventDay {
         continue
       }
 
-      let left = digits[0 ..< (digits.count / 2)].numberFromDigits
-      let right = digits[(digits.count / 2) ..< digits.count].numberFromDigits
+      let left = digits[0..<(digits.count / 2)].numberFromDigits
+      let right = digits[(digits.count / 2)..<digits.count].numberFromDigits
 
       result[left, default: 0] += count
       result[right, default: 0] += count
@@ -68,7 +68,7 @@ struct Day11: AdventDay {
   func part1() async -> Any {
     var stones = initialStones
 
-    for _ in 1 ... 25 {
+    for _ in 1...25 {
       stones = processStones(input: stones)
     }
 
@@ -78,7 +78,7 @@ struct Day11: AdventDay {
   func part2() async -> Any {
     var stones = initialStones.reduce(into: [:]) { $0[$1, default: 0] += 1 }
 
-    for i in 1 ... 75 {
+    for _ in 1...75 {
       stones = processStonesSmarter(input: stones)
     }
 
@@ -90,8 +90,8 @@ struct Day11: AdventDay {
   }
 }
 
-fileprivate extension Int {
-  var digits: [Int] {
+extension Int {
+  fileprivate var digits: [Int] {
     var num = self
     var digits: [Int] = []
 
@@ -104,8 +104,8 @@ fileprivate extension Int {
   }
 }
 
-fileprivate extension ArraySlice<Int> {
-  var numberFromDigits: Int {
+extension ArraySlice<Int> {
+  fileprivate var numberFromDigits: Int {
     reduce(0) { $0 * 10 + $1 }
   }
 }

@@ -10,6 +10,4 @@ struct Day11Tests {
     await #expect(String(describing: challenge.part1()) == "55312")
   }
 
-  
-
 }
