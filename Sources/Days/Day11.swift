@@ -65,28 +65,62 @@ struct Day11: AdventDay {
     return result
   }
 
-  func part1() async -> Any {
-    var stones = initialStones
+  func recursiveProcessStones(number: Int, recursion: Int, memo: inout [Int: [Int: Int]]) -> Int {
+    guard recursion != 0 else { return 1 }
 
-    for _ in 1...25 {
-      stones = processStones(input: stones)
+    if let result = memo[recursion]?[number] {
+      return result
     }
 
-    return stones.count
+    if number == 0 {
+      let result = recursiveProcessStones(number: 1, recursion: recursion - 1, memo: &memo)
+      memo[recursion, default: [:]][number] = result
+      return result
+    }
+
+    if number == 1 {
+      let result = recursiveProcessStones(number: 2024, recursion: recursion - 1, memo: &memo)
+      memo[recursion, default: [:]][number] = result
+      return result
+    }
+
+    let digits = number.digits
+    guard digits.count % 2 == 0 else {
+      let result = recursiveProcessStones(number: number * 2024, recursion: recursion - 1, memo: &memo)
+      memo[recursion, default: [:]][number] = result
+
+      return result
+    }
+
+    let left = digits[0..<(digits.count / 2)].numberFromDigits
+    let right = digits[(digits.count / 2)..<digits.count].numberFromDigits
+
+    let leftResult = recursiveProcessStones(number: left, recursion: recursion - 1, memo: &memo)
+    let rightResult = recursiveProcessStones(number: right, recursion: recursion - 1, memo: &memo)
+
+    memo[recursion, default: [:]][number] = leftResult + rightResult
+
+    return leftResult + rightResult
   }
 
-  func part2() async -> Any {
+  func part1() async -> Any {
     var stones = initialStones.reduce(into: [:]) { $0[$1, default: 0] += 1 }
 
     for _ in 1...75 {
       stones = processStonesSmarter(input: stones)
     }
 
-    let sum = stones.reduce(into: 0) { acc, dictionaryItem in
-      acc += dictionaryItem.value
-    }
+    return stones.values.reduce(0, +)
+  }
 
-    return sum
+  func part2() async -> Any {
+    var memo: [Int: [Int: Int]] = [:]
+
+    let recursive =  initialStones.map {
+      recursiveProcessStones(number: $0, recursion: 75, memo: &memo)
+    }.reduce(0, +)
+
+    return recursive
   }
 }
 
