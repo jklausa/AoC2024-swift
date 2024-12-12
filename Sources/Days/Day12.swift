@@ -92,8 +92,6 @@ struct Day12: AdventDay {
       nodesToVisit.prepend(contentsOf: adjacentNodes.map(\.0))
     }
 
-    print("longest path for \(character): \(visited)")
-
     return visited
   }
 
@@ -128,30 +126,24 @@ struct Day12: AdventDay {
         (key, distinctPlots(for: key, locations: value, matrix: matrix))
       }
 
-    for (key, value) in calculatedDistinctPlots {
-      print("distinct plots for \(key): \(value.count)")
-      value.forEach {
-        print($0)
-      }
-      print("----")
-    }
-
     let perimeters = calculatedDistinctPlots.map { (key, sets) in
-        let perimeters = sets.map {
-          let result = calculatePerimeter(plantType: key, plots: Array($0), matrix: matrix)
-          print("perimeter for:\(key): \(result)")
-
-          return result * $0.count
-        }
-        return perimeters.reduce(0, +)
+      // for each set, calculate the perimeter, and then multiply by the number of plots in that set
+      let perimeters = sets.map {
+        let result = calculatePerimeter(plantType: key, plots: Array($0), matrix: matrix)
+        return result * $0.count
       }
 
+      // then sum all the plots for a given character
       return perimeters.reduce(0, +)
     }
 
+    // then sum all of the plots for all characters
+    return perimeters.reduce(0, +)
+  }
+
   func part2() -> Any {
     return 0
-//    entities.map { $0.max() ?? 0 }.reduce(0, +)
+    //    entities.map { $0.max() ?? 0 }.reduce(0, +)
   }
 }
 
