@@ -97,57 +97,6 @@ struct Day12: AdventDay {
     return visited
   }
 
-//  func distinctPlots(for character: Character, locations: [Plot], matrix: [[Character]]) -> [Set<Plot>] {
-//    var nodesToVisit = Deque(locations)
-//    var visited = Set<Plot>()
-//
-//    var distinctPlots: [Set<Plot>] = []
-//    var currentSet: Set<Plot> = [nodesToVisit.first!]
-//
-//    while let currentNode = nodesToVisit.popFirst() {
-//      guard !visited.contains(currentNode) else {
-//        continue
-//      }
-//
-//      visited.insert(currentNode)
-//
-//      // up, down, left, right
-//      let offsets = [(-1, 0), (1, 0), (0, -1), (0, 1)]
-//      let offsetsWithCharacters = offsets.map {
-//        ($0, matrix[safe: currentNode.row + $0.0]?[safe: currentNode.column + $0.1])
-//      }
-//
-//      var shouldStartNewSet = true
-//      for (offset, iteratedCharacter) in offsetsWithCharacters {
-//        guard iteratedCharacter == character else {
-//          continue
-//        }
-//
-//        let iteratedNode = Plot(row: currentNode.row + offset.0, column: currentNode.column + offset.1)
-//        let (inserted, _) = currentSet.insert(iteratedNode)
-//        nodesToVisit.append(iteratedNode)
-//
-//        if inserted {
-//          shouldStartNewSet = false
-//        }
-//      }
-//
-//      if shouldStartNewSet {
-//        distinctPlots.append(currentSet)
-//        currentSet = Set([currentNode])
-//      }
-//
-//    }
-//
-//    if distinctPlots.isEmpty {
-//      return [currentSet]
-//    }
-//
-//    print("distinctPlots for \(character): \(distinctPlots)")
-//
-//    return distinctPlots
-//  }
-
   func calculatePerimeter(plantType: Character, plots: [Plot], matrix: [[Character]]) -> Int {
     var nodesToCheck = Deque(plots)
 
@@ -199,68 +148,6 @@ struct Day12: AdventDay {
 
       return perimeters.reduce(0, +)
     }
-
-
-//      .reduce(0, +)
-
-//    return calculatedDistinctPlots
-
-
-//    for (key, value) in calculateDistinctPlots {
-//      let perimeters = value.map { calculatePerimeter(plantType: key, plots: <#T##[Plot]#>, matrix: <#T##[[Character]]#>)}
-//    }
-//
-//
-//
-//    let distinctPlotsOld: [Character: [Set<Plot>]] = plots.mapValues { plots in
-//      var sets = [Set<Plot>]()
-//
-//      for plot in plots {
-//        let matchingSetIndex = sets.firstIndex(where: {
-//          let left = Plot(row: plot.row, column: plot.column - 1)
-//          let right = Plot(row: plot.row, column: plot.column + 1)
-//          let up = Plot(row: plot.row - 1, column: plot.column)
-//          let down = Plot(row: plot.row + 1, column: plot.column)
-//
-//          return $0.contains(left) || $0.contains(right) || $0.contains(up) || $0.contains(down)
-//        })
-//
-//        if let matchingSetIndex {
-//          var currentSet = sets[matchingSetIndex]
-//          currentSet.insert(plot)
-//          sets[matchingSetIndex] = currentSet
-//        } else {
-//          let newSet = Set([plot])
-//          sets.append(newSet)
-//        }
-//      }
-//
-//      if matrix[plots.first!.row][plots.first!.column] == "C" {
-//        print(sets)
-//      }
-//
-//
-//      return sets
-//    }
-//
-//    let distinctPlotPerimeters: Int = distinctPlotsOld.reduce(into: 0) { acc, dictionaryItem in
-//      let distinctSets = dictionaryItem.value
-//
-//      let reducedSets = distinctSets.reduce(into: 0) { innerAcc, set in
-//        let perimeter = calculatePerimeter(
-//          plantType: dictionaryItem.key,
-//          plots: Array(set),
-//          matrix: matrix
-//        )
-//
-//        print("perimeter for:\(dictionaryItem.key): \(perimeter)")
-//        innerAcc += perimeter * set.count
-//      }
-//
-//      acc += reducedSets
-//    }
-
-//    return distinctPlotPerimeters
 
   func part2() -> Any {
     return 0
