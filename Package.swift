@@ -28,7 +28,8 @@ let package = Package(
     .executableTarget(
       name: "AdventOfCode",
       dependencies: dependencies,
-      resources: [.copy("Data")]
+      resources: [.copy("Data")],
+      cSettings: [.define("ACCELERATE_NEW_LAPACK")]
     ),
     .testTarget(
       name: "AdventOfCodeTests",
