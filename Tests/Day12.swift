@@ -4,49 +4,49 @@ import Testing
 
 struct Day12ests {
   let testDataOne = """
-AAAA
-BBCD
-BBCC
-EEEC
-"""
+    AAAA
+    BBCD
+    BBCC
+    EEEC
+    """
 
   let testDataTwo = """
-OOOOO
-OXOXO
-OOOOO
-OXOXO
-OOOOO
-"""
+    OOOOO
+    OXOXO
+    OOOOO
+    OXOXO
+    OOOOO
+    """
 
   let testDataThree = """
-RRRRIICCFF
-RRRRIICCCF
-VVRRRCCFFF
-VVRCCCJFFF
-VVVVCJJCFE
-VVIVCCJJEE
-VVIIICJJEE
-MIIIIIJJEE
-MIIISIJEEE
-MMMISSJEEE
-"""
+    RRRRIICCFF
+    RRRRIICCCF
+    VVRRRCCFFF
+    VVRCCCJFFF
+    VVVVCJJCFE
+    VVIVCCJJEE
+    VVIIICJJEE
+    MIIIIIJJEE
+    MIIISIJEEE
+    MMMISSJEEE
+    """
 
   let testDataFour = """
-EEEEE
-EXXXX
-EEEEE
-EXXXX
-EEEEE
-"""
+    EEEEE
+    EXXXX
+    EEEEE
+    EXXXX
+    EEEEE
+    """
 
   let testDataFive = """
-AAAAAA
-AAABBA
-AAABBA
-ABBAAA
-ABBAAA
-AAAAAA
-"""
+    AAAAAA
+    AAABBA
+    AAABBA
+    ABBAAA
+    ABBAAA
+    AAAAAA
+    """
 
   @Test func testPart1() async throws {
     let challenge = Day12(data: testDataOne)
@@ -75,6 +75,5 @@ AAAAAA
     let challenge5 = Day12(data: testDataFive)
     #expect(String(describing: challenge5.part2()) == "368")
   }
-
 
 }

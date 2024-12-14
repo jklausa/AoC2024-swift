@@ -15,13 +15,13 @@ struct Day14: AdventDay {
   }
 
   var inputs: [Input] {
-    let lines = data
+    let lines =
+      data
       .trimmingCharacters(in: .whitespacesAndNewlines)
       .components(separatedBy: .newlines)
       .filter { !$0.isEmpty }
 
     let regex = /p=(-?\d+)\,(-?\d+) v=(-?\d+)\,(-?\d+)/
-
 
     return lines.compactMap {
       guard let match = try? regex.firstMatch(in: $0) else {
@@ -43,11 +43,14 @@ struct Day14: AdventDay {
   func calculatePosition(for input: Input, after seconds: Int, gridSize: (Int, Int)) -> Position {
     let (dx, dy) = input.movement
 
-    let newPosition = (input.startingPosition.x + dx * seconds,
-                       input.startingPosition.y + dy * seconds)
+    let newPosition = (
+      input.startingPosition.x + dx * seconds,
+      input.startingPosition.y + dy * seconds
+    )
 
-    return Position(x: newPosition.0 %% gridSize.0,
-                    y: newPosition.1 %% gridSize.1)
+    return Position(
+      x: newPosition.0 %% gridSize.0,
+      y: newPosition.1 %% gridSize.1)
   }
 
   func part1() -> Any {
@@ -107,7 +110,7 @@ struct Day14: AdventDay {
 
     let tmpDirectory = URL(fileURLWithPath: "file:///Users/klausa/aoc-output/")
 
-    for iteration in 0_000_000 ... 5_001_000 {
+    for iteration in 0_000_000...5_001_000 {
       let movedItems = parsedInputs.map {
         calculatePosition(for: $0, after: iteration, gridSize: gridSize)
       }
@@ -125,7 +128,8 @@ struct Day14: AdventDay {
 
       let tmpFileName = tmpDirectory.appendingPathComponent("\(iteration).txt")
 
-      let strings = visualizedArray
+      let strings =
+        visualizedArray
         .map { currentRow in
           let joined = currentRow.joined()
 
@@ -146,10 +150,9 @@ struct Day14: AdventDay {
   }
 }
 
-
 infix operator %%
 extension Int {
-  static  func %% (_ left: Int, _ right: Int) -> Int {
+  static func %% (_ left: Int, _ right: Int) -> Int {
     let mod = left % right
     return mod >= 0 ? mod : mod + right
   }

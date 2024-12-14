@@ -52,12 +52,16 @@ struct Day12: AdventDay {
       }
   }
 
-  func distinctPlots(for character: Character, locations: [Plot], matrix: [[Character]]) -> [Set<Plot>] {
+  func distinctPlots(for character: Character, locations: [Plot], matrix: [[Character]]) -> [Set<
+    Plot
+  >] {
     var nodesToVisit = Deque(locations)
     var distinctPlots: [Set<Plot>] = []
 
     while let currentNode = nodesToVisit.popFirst() {
-      guard let matchingIndex = distinctPlots.firstIndex(where: { set in set.contains(currentNode) }) else {
+      guard
+        let matchingIndex = distinctPlots.firstIndex(where: { set in set.contains(currentNode) })
+      else {
         distinctPlots.append(longestPath(starting: currentNode, in: matrix))
         continue
       }
@@ -105,7 +109,7 @@ struct Day12: AdventDay {
       let left = matrix[safe: currentNode.row]?[safe: currentNode.column - 1]
       let right = matrix[safe: currentNode.row]?[safe: currentNode.column + 1]
       let up = matrix[safe: currentNode.row - 1]?[safe: currentNode.column]
-      let down = matrix[safe: currentNode.row + 1]?[safe:currentNode.column]
+      let down = matrix[safe: currentNode.row + 1]?[safe: currentNode.column]
 
       let touching = [left, right, up, down]
         .compactMap { $0 }
@@ -144,10 +148,10 @@ struct Day12: AdventDay {
   }
 
   func countCorners(plantType: Character, plots: [Plot], matrix: [[Character]]) -> Int {
-      // corners are the same count as sides
+    // corners are the same count as sides
 
-      // corners are: top left, top right, bottom right, bottom left
-      // it's a corner if the adjacent nodes are not the same as the plant type
+    // corners are: top left, top right, bottom right, bottom left
+    // it's a corner if the adjacent nodes are not the same as the plant type
 
     var count: Int = 0
 
@@ -157,7 +161,9 @@ struct Day12: AdventDay {
       let isBottomLeftCorner = matrix[plot.left] != plantType && matrix[plot.down] != plantType
       let isBottomRightCorner = matrix[plot.right] != plantType && matrix[plot.down] != plantType
 
-      count += [isTopLeftCorner, isTopRightCorner, isBottomLeftCorner, isBottomRightCorner].filter { $0 }.count
+      count +=
+        [isTopLeftCorner, isTopRightCorner, isBottomLeftCorner, isBottomRightCorner].filter { $0 }
+        .count
     }
 
     return count
@@ -167,7 +173,8 @@ struct Day12: AdventDay {
     let matrix = parseMatrix()
     let plots = plots(matrix: matrix)
 
-    let calculatedDistinctPlots = plots
+    let calculatedDistinctPlots =
+      plots
       .map { (key, value) in
         (key, distinctPlots(for: key, locations: value, matrix: matrix))
       }
@@ -192,7 +199,7 @@ struct Day12: AdventDay {
     let plots = plots(matrix: matrix)
 
     let calculatedDistinctPlots =
-    plots
+      plots
       .values
       .map {
         let key = matrix[$0.first!.row][$0.first!.column]
@@ -231,9 +238,8 @@ extension Collection {
   }
 }
 
-extension Array<[Character]> {
+extension [[Character]] {
   subscript(at: Day12.Plot) -> Character? {
-      self[safe: at.row]?[safe: at.column]
+    self[safe: at.row]?[safe: at.column]
   }
 }
-

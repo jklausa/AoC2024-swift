@@ -1,3 +1,4 @@
+import Accelerate
 import Algorithms
 import Collections
 
@@ -21,16 +22,15 @@ struct Day13: AdventDay {
   var machines: [Machine] {
     let sections = data.split(separator: "\n\n")
 
-    let foo = try? sections
+    let foo =
+      try? sections
       .map {
         let lines = $0.split(separator: "\n")
 
         let buttonRegex = /X\+(\d+)\, Y\+(\d+)/
 
-
         let aButton = try buttonRegex.firstMatch(in: String(lines[0]))!
         let bButton = try buttonRegex.firstMatch(in: String(lines[1]))!
-
 
         let prizeRegex = /X\=(\d+), Y\=(\d+)/
 
@@ -45,7 +45,6 @@ struct Day13: AdventDay {
 
     return foo!
   }
-
 
   struct Position: Hashable {
     var x: Int
@@ -69,7 +68,7 @@ struct Day13: AdventDay {
     // machine: cost
     var dict: [Position: Int] = [:]
 
-    var machinesToTry: Deque<Position> = [Position(x:0, y: 0)]
+    var machinesToTry: Deque<Position> = [Position(x: 0, y: 0)]
     while let currentMachine = machinesToTry.popFirst() {
       guard dict[currentMachine] == nil else {
         continue
@@ -89,14 +88,17 @@ struct Day13: AdventDay {
 
       // does there exist a machine that we solved before, that is
       // one button press away from this machine?
-      let currentWithoutB = Position(x: currentMachine.x - machine.bButton.0,
-                                     y: currentMachine.y - machine.bButton.1)
+      let currentWithoutB = Position(
+        x: currentMachine.x - machine.bButton.0,
+        y: currentMachine.y - machine.bButton.1)
 
-      let currentWithoutA = Position(x: currentMachine.x - machine.aButton.0,
-                                     y: currentMachine.y - machine.aButton.1)
+      let currentWithoutA = Position(
+        x: currentMachine.x - machine.aButton.0,
+        y: currentMachine.y - machine.aButton.1)
 
       if dict[currentWithoutA] != nil, dict[currentWithoutB] != nil {
-        dict[currentMachine] = min(dict[currentWithoutA]! + aButtonPressCost, dict[currentWithoutB]! + bButtonPressCost)
+        dict[currentMachine] = min(
+          dict[currentWithoutA]! + aButtonPressCost, dict[currentWithoutB]! + bButtonPressCost)
       } else if dict[currentWithoutA] != nil {
         dict[currentMachine] = dict[currentWithoutA]! + aButtonPressCost
       } else if dict[currentWithoutB] != nil {
@@ -104,12 +106,15 @@ struct Day13: AdventDay {
       }
 
       let nextPotentialMachines = [
-        Position(x: currentMachine.x + machine.aButton.0,
-                 y: currentMachine.y + machine.aButton.1),
-        Position(x: currentMachine.x + machine.bButton.0,
-                 y: currentMachine.y + machine.bButton.1),
-        Position(x: currentMachine.x + machine.aButton.0 + machine.bButton.0,
-                 y: currentMachine.y + machine.aButton.1 + machine.bButton.1)
+        Position(
+          x: currentMachine.x + machine.aButton.0,
+          y: currentMachine.y + machine.aButton.1),
+        Position(
+          x: currentMachine.x + machine.bButton.0,
+          y: currentMachine.y + machine.bButton.1),
+        Position(
+          x: currentMachine.x + machine.aButton.0 + machine.bButton.0,
+          y: currentMachine.y + machine.aButton.1 + machine.bButton.1),
       ].filter {
         $0.x <= machine.prizeLocation.0 && $0.y <= machine.prizeLocation.1
       }
@@ -120,13 +125,11 @@ struct Day13: AdventDay {
     return dict[Position(machine.prizeLocation)] ?? 0
   }
 
-
   func part1() -> Any {
     let parsedMachines = machines
 
     return parsedMachines.map { findCheapestSolve(for: $0) }.reduce(0, +)
   }
-
 
   func part2() throws -> Any {
     if #available(macOS 13.3, *) {
@@ -134,28 +137,29 @@ struct Day13: AdventDay {
     } else {
       return 0
     }
-
   }
 
   @available(macOS 13.3, *)
   func part2Implementation() throws -> Int {
     let bigMachines = machines.map {
-      Machine(aButton: $0.aButton,
-              bButton: $0.bButton,
-              prizeLocation:
-                ($0.prizeLocation.0 + 10000000000000, $0.prizeLocation.1 + 10000000000000)
+      Machine(
+        aButton: $0.aButton,
+        bButton: $0.bButton,
+        prizeLocation: (
+          $0.prizeLocation.0 + 10_000_000_000_000, $0.prizeLocation.1 + 10_000_000_000_000
+        )
       )
     }
 
-    let solves = try bigMachines.map  { machine in
+    let solves = try bigMachines.map { machine in
       var matrixA: [Double] = [
         machine.aButton.0, machine.bButton.0,
-        machine.aButton.1, machine.bButton.1
+        machine.aButton.1, machine.bButton.1,
       ].map { Double($0) }
 
       var matrixB: [Double] = [
         Double(machine.prizeLocation.0),
-        Double(machine.prizeLocation.1)
+        Double(machine.prizeLocation.1),
       ]
 
       try Solver.solveLinearSystem(matrixA: &matrixA, matrixB: &matrixB, count: 2)
@@ -179,14 +183,14 @@ struct Day13: AdventDay {
 }
 
 /// All of this is just copy-paste from this: https://developer.apple.com/documentation/accelerate/solving_systems_of_linear_equations_with_lapack
-import Accelerate
-
 @available(macOS 13.3, *)
 struct Solver {
 
-  static func solveLinearSystem(matrixA: inout [Double],
-                                matrixB: inout [Double],
-                                count: Int) throws {
+  static func solveLinearSystem(
+    matrixA: inout [Double],
+    matrixB: inout [Double],
+    count: Int
+  ) throws {
 
     /// By default, LAPACK expects matrices in column-major format. Specify transpose to support
     /// the row-major Vandermonde matrix.
@@ -195,14 +199,15 @@ struct Solver {
     /// Pass `-1` to the `lwork` parameter of `dgels_` to calculate the optimal size for the
     /// workspace array. The function writes the optimal size to the `workDimension` variable.
     var workspaceCount = Double(0)
-    let err = dgels(transpose: trans,
-                    rowCount: count,
-                    columnCount: count,
-                    rightHandSideCount: 1,
-                    matrixA: &matrixA, leadingDimensionA: count,
-                    matrixB: &matrixB, leadingDimensionB: count,
-                    workspace: &workspaceCount,
-                    workspaceCount: -1)
+    let err = dgels(
+      transpose: trans,
+      rowCount: count,
+      columnCount: count,
+      rightHandSideCount: 1,
+      matrixA: &matrixA, leadingDimensionA: count,
+      matrixB: &matrixB, leadingDimensionB: count,
+      workspace: &workspaceCount,
+      workspaceCount: -1)
 
     if err != 0 {
       throw LAPACKError.internalError
@@ -216,14 +221,15 @@ struct Solver {
     }
 
     /// Perform the solve by passing the workspace array size to the `lwork` parameter of `dgels_`.
-    let info = dgels(transpose: trans,
-                     rowCount: count,
-                     columnCount: count,
-                     rightHandSideCount: 1,
-                     matrixA: &matrixA, leadingDimensionA: count,
-                     matrixB: &matrixB, leadingDimensionB: count,
-                     workspace: workspace,
-                     workspaceCount: Int(workspaceCount))
+    let info = dgels(
+      transpose: trans,
+      rowCount: count,
+      columnCount: count,
+      rightHandSideCount: 1,
+      matrixA: &matrixA, leadingDimensionA: count,
+      matrixB: &matrixB, leadingDimensionB: count,
+      workspace: workspace,
+      workspaceCount: Int(workspaceCount))
 
     if info < 0 {
       throw LAPACKError.parameterHasIllegalValue(parameterIndex: abs(Int(info)))
@@ -232,23 +238,24 @@ struct Solver {
     }
   }
 
-
   public enum LAPACKError: Swift.Error {
     case internalError
     case parameterHasIllegalValue(parameterIndex: Int)
     case diagonalElementOfTriangularFactorIsZero(index: Int)
   }
 
-  private static func dgels(transpose trans: CChar,
-                            rowCount m: Int,
-                            columnCount n: Int,
-                            rightHandSideCount nrhs: Int,
-                            matrixA a:  UnsafeMutablePointer<Double>,
-                            leadingDimensionA lda: Int,
-                            matrixB b:  UnsafeMutablePointer<Double>,
-                            leadingDimensionB ldb: Int,
-                            workspace work:  UnsafeMutablePointer<Double>,
-                            workspaceCount lwork: Int) -> Int32 {
+  private static func dgels(
+    transpose trans: CChar,
+    rowCount m: Int,
+    columnCount n: Int,
+    rightHandSideCount nrhs: Int,
+    matrixA a: UnsafeMutablePointer<Double>,
+    leadingDimensionA lda: Int,
+    matrixB b: UnsafeMutablePointer<Double>,
+    leadingDimensionB ldb: Int,
+    workspace work: UnsafeMutablePointer<Double>,
+    workspaceCount lwork: Int
+  ) -> Int32 {
 
     var info = Int32(0)
 
@@ -259,12 +266,13 @@ struct Solver {
             withUnsafePointer(to: __LAPACK_int(lda)) { lda in
               withUnsafePointer(to: __LAPACK_int(ldb)) { ldb in
                 withUnsafePointer(to: __LAPACK_int(lwork)) { lwork in
-                  dgels_(trans, m, n,
-                         nrhs,
-                         a, lda,
-                         b, ldb,
-                         work, lwork,
-                         &info)
+                  dgels_(
+                    trans, m, n,
+                    nrhs,
+                    a, lda,
+                    b, ldb,
+                    work, lwork,
+                    &info)
                 }
               }
             }
