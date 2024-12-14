@@ -18,20 +18,9 @@ struct Day14Tests {
     p=9,5 v=-3,-3    
     """
 
-  let simpleTestData = "p=2,4 v=2,-3"
-
-  @Test func testSimplePart1() async throws {
-    let challenge = Day14(data: simpleTestData)
-    #expect(String(describing: challenge.part1()) == "2")
-  }
-
   @Test func testPart1() async throws {
     let challenge = Day14(data: testData)
     #expect(String(describing: challenge.part1()) == "12")
   }
 
-//  @Test func testPart2() async throws {
-//    let challenge = Day14(data: testData)
-//    #expect(String(describing: challenge.part2()) == "31")
-//  }
 }

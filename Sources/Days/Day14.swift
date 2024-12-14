@@ -1,3 +1,5 @@
+import Foundation
+
 struct Day14: AdventDay {
   var data: String
 
@@ -88,15 +90,65 @@ struct Day14: AdventDay {
   }
 
   func part2() -> Any {
-    return 0
+    // The code here is not... interesting?
+    // I just generated a bunch of files that contain the output, wrote them
+    // out to my homedir, and looked through them via quicklook.
+    // Once I had _a_ tree, I just added a simple text search to find the _first_ one....
+    // Putting the string I searched for would spoil part of the puzzle, so I'm not including it.
+    // If I ever go through and want to find this again, _an_ instance of the tree
+    // is found at iteration 5000932 (for my input, that is.)
+    //
+    // Because I sometimes run the --benchmarkOption,
+    // if you actually want to create a bunch of files, change this to true.
+    let doYouWantToSpamYourDisk = false
+
+    let parsedInputs = inputs
+    let gridSize = (101, 103)
+
+    let tmpDirectory = URL(fileURLWithPath: "file:///Users/klausa/aoc-output/")
+
+    for iteration in 0_000_000 ... 5_001_000 {
+      let movedItems = parsedInputs.map {
+        calculatePosition(for: $0, after: iteration, gridSize: gridSize)
+      }
+
+      let grid = movedItems.reduce(into: [Position: Int]()) {
+        $0[$1, default: 0] += 1
+      }
+
+      var row = Array(repeating: ".", count: 103)
+      var visualizedArray = Array(repeating: row, count: 103)
+
+      for newRobotPosition in grid {
+        visualizedArray[newRobotPosition.key.y][newRobotPosition.key.x] = "#"
+      }
+
+      let tmpFileName = tmpDirectory.appendingPathComponent("\(iteration).txt")
+
+      let strings = visualizedArray
+        .map { currentRow in
+          let joined = currentRow.joined()
+
+          if joined.contains("STRING TO FIND A TREE HERE") {
+            fatalError("Found it: \(iteration)")
+          }
+
+          return joined
+        }
+        .joined(separator: "\n")
+
+      guard doYouWantToSpamYourDisk else { continue }
+
+      try? strings.write(to: tmpFileName, atomically: true, encoding: .utf8)
+    }
+
+    return tmpDirectory
   }
 }
 
 
 infix operator %%
-
 extension Int {
-
   static  func %% (_ left: Int, _ right: Int) -> Int {
     let mod = left % right
     return mod >= 0 ? mod : mod + right
