@@ -116,7 +116,7 @@ struct Day14: AdventDay {
         $0[$1, default: 0] += 1
       }
 
-      var row = Array(repeating: ".", count: 103)
+      let row = Array(repeating: ".", count: 103)
       var visualizedArray = Array(repeating: row, count: 103)
 
       for newRobotPosition in grid {
