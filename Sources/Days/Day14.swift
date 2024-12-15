@@ -105,6 +105,10 @@ struct Day14: AdventDay {
     // if you actually want to create a bunch of files, change this to true.
     let doYouWantToSpamYourDisk = false
 
+    guard doYouWantToSpamYourDisk else {
+      return "Disabled."
+    }
+
     let parsedInputs = inputs
     let gridSize = (101, 103)
 

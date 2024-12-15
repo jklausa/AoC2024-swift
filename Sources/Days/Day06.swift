@@ -25,6 +25,7 @@ struct Day06: AdventDay {
 
     let mappedData =
       data
+      .trimmingCharacters(in: .whitespacesAndNewlines)
       .components(separatedBy: .whitespacesAndNewlines)
       .enumerated()
       .map { x, string in
