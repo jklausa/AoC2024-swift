@@ -67,7 +67,7 @@ struct Day12ests {
     #expect(String(describing: challenge2.part2()) == "436")
 
     let challenge3 = Day12(data: testDataThree)
-    #expect(String(describing: challenge2.part2()) == "1206")
+    #expect(String(describing: challenge3.part2()) == "1206")
 
     let challenge4 = Day12(data: testDataFour)
     #expect(String(describing: challenge4.part2()) == "236")

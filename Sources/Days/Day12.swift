@@ -156,10 +156,33 @@ struct Day12: AdventDay {
     var count: Int = 0
 
     for plot in plots {
-      let isTopLeftCorner = matrix[plot.left] != plantType && matrix[plot.up] != plantType
-      let isTopRightCorner = matrix[plot.right] != plantType && matrix[plot.up] != plantType
-      let isBottomLeftCorner = matrix[plot.left] != plantType && matrix[plot.down] != plantType
-      let isBottomRightCorner = matrix[plot.right] != plantType && matrix[plot.down] != plantType
+      let isTopLeftCorner = {
+        let normalRule = matrix[plot.left] != plantType && matrix[plot.up] != plantType
+        let edgeCase = matrix[plot.left] != plantType && matrix[plot.up.left] == plantType
+
+        return normalRule || edgeCase
+      }()
+
+      let isTopRightCorner = {
+        let normalRule = matrix[plot.right] != plantType && matrix[plot.up] != plantType
+        let edgeCase = matrix[plot.right] != plantType && matrix[plot.up.right] == plantType
+
+        return normalRule || edgeCase
+      }()
+
+      let isBottomLeftCorner = {
+        let normalRule = matrix[plot.left] != plantType && matrix[plot.down] != plantType
+        let edgeCase = matrix[plot.left] != plantType && matrix[plot.down.left] == plantType
+
+        return normalRule || edgeCase
+      }()
+
+      let isBottomRightCorner = {
+        let normalRule = matrix[plot.right] != plantType && matrix[plot.down] != plantType
+        let edgeCase = matrix[plot.right] != plantType && matrix[plot.down.right] == plantType
+
+        return normalRule || edgeCase
+      }()
 
       count +=
         [isTopLeftCorner, isTopRightCorner, isBottomLeftCorner, isBottomRightCorner].filter { $0 }
@@ -207,27 +230,16 @@ struct Day12: AdventDay {
       }
       .flatMap { $0 }
 
-    let perimeters = calculatedDistinctPlots.map { set in
-      let key = matrix[set.first!.row][set.first!.column]
-      return calculatePerimeter(plantType: key, plots: Array(set), matrix: matrix)
-    }
-
     let newPerimeter = calculatedDistinctPlots.map { set in
       let key = matrix[set.first!.row][set.first!.column]
       let perimeterPlots = perimeter(plantType: key, plots: Array(set), matrix: matrix)
 
       let corners = countCorners(plantType: key, plots: perimeterPlots, matrix: matrix)
 
-      print("corner for \(key): \(corners)")
-
-      return corners * perimeterPlots.count
+      return corners * set.count
     }
 
-    print(perimeters)
-    print(newPerimeter)
-
     return newPerimeter.reduce(0, +)
-    //    entities.map { $0.max() ?? 0 }.reduce(0, +)
   }
 }
 
