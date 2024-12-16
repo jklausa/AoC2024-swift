@@ -53,6 +53,10 @@ struct Day16: AdventDay {
     var tilesWalked: Set<Position>
 
     var currentPosition: CurrentPosition
+
+    var price: Int {
+      tilesWalked.count + turns * 1000
+    }
   }
 
   enum MapTile: Hashable {
@@ -84,6 +88,7 @@ struct Day16: AdventDay {
     let rows = data
       .trimmingCharacters(in: .whitespacesAndNewlines)
       .components(separatedBy: .newlines)
+      .filter { !$0.isEmpty }
 
     return rows.map {
       let columns = $0.map { $0 }
@@ -114,16 +119,21 @@ struct Day16: AdventDay {
       )
     ]
 
+    var prices: [Position: Int] = [:]
+
     while let path = pathsToCheck.popFirst() {
-      print("========")
-      print("paths count: \(pathsToCheck.count)")
-      print("walked: \(path.tilesWalked.count)")
-      print("turns: \(path.turns)")
-      print("=====")
       guard map[path.currentPosition.position] != .destination else {
         completePaths.append(path)
         continue
       }
+
+      let currentPrice = prices[path.currentPosition.position, default: Int.max]
+      guard path.price < currentPrice else {
+        continue
+      }
+
+      prices[path.currentPosition.position] = path.price
+
 
       // We don't wanna double-over on the same tile
       guard !path.tilesWalked.contains(path.currentPosition.position) else {
@@ -162,7 +172,7 @@ struct Day16: AdventDay {
 
     let scores = completePaths
       .map {
-        $0.turns * 1000 + $0.tilesWalked.count
+        $0.price
       }
       .sorted()
 
