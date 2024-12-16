@@ -92,7 +92,7 @@ struct Day16: AdventDay {
     }
   }
 
-  func findPaths(in map: [[MapTile]], priceTolerance: Int = 0) -> [Path] {
+  func findPaths(in map: [[MapTile]], comparison: (Int, Int) -> Bool = { $0 < $1 }) -> [Path] {
     var completePaths: [Path] = []
 
     let startingPosition = Position(row: map.indices.last! - 1,
@@ -110,7 +110,7 @@ struct Day16: AdventDay {
       )
     ]
 
-    var prices: [Position: Int] = [:]
+    var prices: [CurrentPosition: Int] = [:]
 
     while let path = pathsToCheck.popFirst() {
       guard map[path.currentPosition.position] != .destination else {
@@ -118,12 +118,12 @@ struct Day16: AdventDay {
         continue
       }
 
-      let currentPrice = prices[path.currentPosition.position, default: Int.max]
-      guard (path.price - priceTolerance) < currentPrice else {
+      let currentPrice = prices[path.currentPosition, default: Int.max]
+      guard comparison(path.price, currentPrice) else {
         continue
       }
 
-      prices[path.currentPosition.position] = path.price
+      prices[path.currentPosition] = path.price
 
 
       // We don't wanna double-over on the same tile
@@ -164,8 +164,6 @@ struct Day16: AdventDay {
     return completePaths
   }
 
-
-
   func part1() -> Any {
     let map = parsedMap
 
@@ -181,7 +179,7 @@ struct Day16: AdventDay {
   func part2() -> Any {
     let map = parsedMap
     
-    let completePaths = findPaths(in: map, priceTolerance: 1001)
+    let completePaths = findPaths(in: map) { $0 <= $1 }
 
     let lowestScore = completePaths.map { $0.price }.sorted().first!
 
