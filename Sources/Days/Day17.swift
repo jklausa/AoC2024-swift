@@ -222,9 +222,18 @@ struct Day17: AdventDay {
   func part2() -> Any {
     let initialVm = parsedInput
 
-    // answer count == octet count
-    // least significant octet influences the next digit
-    // check if next digit fits the requireed, add it to the / check if next digit fits the
+    // I had such nice notes for this and accidentally closed the vim window ;_;
+    // Basically, after staring at the binary numbers for a while,
+    // you notice that:
+    // — the output length is the same as the input length, in _octets_ (groups of 3 bits)
+    // - the left-most octet (msb) affects the _last_ digit of the output
+    // - right-octed (lsb) affects the first digit of the output
+    // and, with added bonus, which caused me to tear my hair for a couple of hours:
+    // - sometimes, there are multiple ways to represent a digit, within one octet
+    //    - in those cases, you _need_ to explore the space of all possibilities,
+    //      there will be scenarios where you can't keep adding matching digits, because
+    //      of a pick you made couple digits ago.
+    //    - explore different branch at that point.
 
     let searchedInput = initialVm.rawProgramInput.compactMap { Int($0) }
 
