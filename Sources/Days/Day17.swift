@@ -148,6 +148,7 @@ struct Day17: AdventDay {
     var rB: Int
     var rC: Int
 
+    let rawProgramInput: [String]
     var instructions: [any Instruction]
     var output: [Int]
 
@@ -170,7 +171,9 @@ struct Day17: AdventDay {
     let regC = Int(String(state[1].dropFirst(12)))!
 
     // drop "Program: "
-    var instructionsStrings: Deque<String> = .init(sections.last!.dropFirst(9).components(separatedBy: ","))
+    let rawProgramInput = sections.last!.dropFirst(9).components(separatedBy: ",")
+
+    var instructionsStrings: Deque<String> = .init(rawProgramInput)
     var instructions: [Instruction] = []
 
     while let currentInstruction = instructionsStrings.popFirst() {
@@ -202,6 +205,7 @@ struct Day17: AdventDay {
                    rA: regA,
                    rB: regB,
                    rC: regC,
+                   rawProgramInput: rawProgramInput,
                    instructions: instructions,
                    output: []
     )
@@ -216,8 +220,49 @@ struct Day17: AdventDay {
   }
 
   func part2() -> Any {
-    return 0
+    let initialVm = parsedInput
+
+    // answer count == octet count
+    // least significant octet influences the next digit
+    // check if next digit fits the requireed, add it to the / check if next digit fits the
+
+    let searchedInput = initialVm.rawProgramInput.compactMap { Int($0) }
+
+    var viableInputs: Deque<Int> = [0, 1, 2, 3, 4, 5, 6, 7]
+    var actualOutputs: [Int] = []
+
+    while let input = viableInputs.popFirst() {
+      var newVM = initialVm
+      newVM.rA = input
+
+      newVM.execute()
+
+      let length = newVM.output.count
+
+      if length == searchedInput.count, searchedInput == newVM.output {
+        actualOutputs.append(input)
+        continue
+      }
+
+      if searchedInput.suffix(length) == newVM.output {
+        let bitshifted = input << 3
+
+        viableInputs.prepend(bitshifted)
+        viableInputs.prepend(bitshifted + 1)
+        viableInputs.prepend(bitshifted + 2)
+        viableInputs.prepend(bitshifted + 3)
+        viableInputs.prepend(bitshifted + 4)
+        viableInputs.prepend(bitshifted + 5)
+        viableInputs.prepend(bitshifted + 5)
+        viableInputs.prepend(bitshifted + 6)
+        viableInputs.prepend(bitshifted + 7)
+      }
+
+    }
+
+    return actualOutputs.min()!
   }
+
 }
 extension Day17.Instruction {
   func execute(vm: inout Day17.VMState) {
