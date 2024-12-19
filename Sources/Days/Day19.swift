@@ -32,16 +32,11 @@ struct Day19: AdventDay {
   }
 
   func canBeArranged(towels: [Towel],
-                     chain: ExpectedTowelChain,
-                     solvableChains: Set<ExpectedTowelChain>) -> Bool {
+                     chain: ExpectedTowelChain)-> Bool {
     var chainVariants: Deque<ExpectedTowelChain> = [chain]
-        var checkedChains: Set<ExpectedTowelChain> = []
+    var checkedChains: Set<ExpectedTowelChain> = []
 
     while let currentChain = chainVariants.popFirst() {
-      guard !solvableChains.contains(currentChain) else {
-        return true
-      }
-
       checkedChains.insert(currentChain)
 
       for availableTowel in towels {
@@ -69,21 +64,12 @@ struct Day19: AdventDay {
   }
 
   func part1() -> Any {
-    var answer = 0
-    var solvableTowels: Set<ExpectedTowelChain> = []
-
     let availableTowels = entities.0
     let expectedTowelChains = entities.1
 
-
-    for (index, towel) in expectedTowelChains.enumerated() {
-      let canBeSolved = canBeArranged(towels: availableTowels, chain: towel, solvableChains: solvableTowels)
-      if canBeSolved {
-        answer += 1
-      }
-    }
-
-    return answer
+    return expectedTowelChains
+      .filter { canBeArranged(towels: availableTowels, chain: $0) }
+      .count
   }
 
   func part2() -> Any {

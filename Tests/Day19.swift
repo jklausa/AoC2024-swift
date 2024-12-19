@@ -31,4 +31,9 @@ grrgu
     let challenge = Day19(data: testDataTwo)
     #expect(String(describing: challenge.part1()) == "1")
   }
+
+  @Test func testPart2() async throws {
+    let challenge = Day19(data: testData)
+    #expect(String(describing: challenge.part1()) == "16")
+  }
 }
