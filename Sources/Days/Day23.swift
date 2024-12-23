@@ -57,6 +57,77 @@ struct Day23: AdventDay {
   }
 
   func part2() -> Any {
-    return 0
+    var edges: [String: Set<String>] = [:]
+
+    for edge in entities {
+      let start = min(edge.from, edge.to)
+      let end = max(edge.from, edge.to)
+
+      edges[start, default: []].insert(end)
+      edges[end, default: []].insert(start)
+    }
+
+    // TIL: This is called a "maximum clique" problem:
+    // https://en.wikipedia.org/wiki/Clique_(graph_theory)#Definitions
+    // https://en.wikipedia.org/wiki/Bron–Kerbosch_algorithm
+
+    // In Python, using NetworkX, this is:
+    //    graph = nx.Graph()
+    //
+    //    for line in inputData.splitlines():
+    //            graph.add_edge(line[0:2], line[3:5])
+    //
+    //    maxClique = max(nx.find_cliques(graph), key=len)
+    //    maxClique.sort()
+    //
+    //    answer = ",".join(maxClique)
+    //    print(answer)
+    //
+
+    let cliques = bronKerbosch(potential: [], candidates: Set(edges.keys), excluded: [], graph: edges)
+    let relevantClique = cliques
+      .sorted { $0.count > $1.count }
+      .first?
+      .sorted()
+      .joined(separator: ",")
+
+    return relevantClique ?? "No answer"
+  }
+
+  func bronKerbosch(potential: Set<String>,
+                    candidates: Set<String>,
+                    excluded: Set<String>,
+                    graph:  [String: Set<String>]) -> [Set<String>] {
+
+    var cliques: [Set<String>] = []
+
+    if candidates.isEmpty && excluded.isEmpty {
+      // No more work to check.
+      cliques.append(potential)
+      return cliques
+    }
+
+    var shadowedCandidates = candidates
+    var shadowedExcluded = excluded
+
+    for node in shadowedCandidates {
+      var newPotential = potential
+
+      newPotential.insert(node)
+      let newCandidates = shadowedCandidates.intersection(graph[node, default: []])
+      let newExcluded = shadowedExcluded.intersection(graph[node, default: []])
+
+      let newClique = bronKerbosch(potential: newPotential,
+                                   candidates: newCandidates,
+                                   excluded: newExcluded,
+                                   graph: graph)
+
+      cliques.append(contentsOf: newClique)
+
+      shadowedCandidates.remove(node)
+      shadowedExcluded.insert(node)
+    }
+
+    return cliques
   }
 }
