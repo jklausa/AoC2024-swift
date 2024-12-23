@@ -105,9 +105,8 @@ struct Day22: AdventDay {
     }
 
     var maxOutcome = Int.min
-    let patternsCount = patterns.count
 
-    for (idx, currentPattern) in patterns.enumerated() {
+    for currentPattern in patterns {
       var currentPatternValue = 0
 
       for pricesList in after2000Rounds {
