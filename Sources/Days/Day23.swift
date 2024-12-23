@@ -3,7 +3,7 @@ import Algorithms
 struct Day23: AdventDay {
   var data: String
 
-  struct Edge {
+  struct Edge: Hashable {
     let from: String
     let to: String
   }
