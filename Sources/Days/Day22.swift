@@ -12,11 +12,9 @@ struct Day22: AdventDay {
       }
   }
 
-  @inlinable
   func firstRule(currentNumber: Int) -> Int {
     (currentNumber ^ currentNumber << 6) & 16777215
   }
-
 
   func secondRule(currentNumber: Int) -> Int {
     (currentNumber >> 5 ^ currentNumber) & 16777215
@@ -91,6 +89,11 @@ struct Day22: AdventDay {
       return values
     }
 
+    // This is insanely slow and dumb, basically bruteforcing all possible
+    // combinations ever
+    // a better way would be to build a set of values of combinations while
+    // we're iterating over an array, and then just pick the best one
+    // but this works to get the star, so (shrug) 
     var patterns: Set<Pattern> = []
 
     for value in after2000Rounds {
